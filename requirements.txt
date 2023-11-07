@@ -1,0 +1,12 @@
+fastapi==0.104.0
+Pillow==10.1.0
+rembg==2.0.52
+Pillow
+ultralytics
+python_weather
+tensorflow
+tensorflow_hub
+numpy
+pandas
+matplotlib
+scikit-learn
