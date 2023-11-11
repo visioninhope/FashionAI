@@ -40,7 +40,7 @@ def extract(source_path):
 
 # Define a route to process images and remove the background
 def remove_bg(img):
-
+    print('inside')
     # Remove the image background using the "rembg" library
     removedBGimage = remove(img, True)
     print('removing')
