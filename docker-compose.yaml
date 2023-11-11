@@ -1,0 +1,15 @@
+version: '3'
+services:
+  web:
+    image: my-fastapi-app:latest
+    container_name: fashionai-container
+    restart: always
+    ports:
+      - "8000:80"
+    environment:
+      - DEBUG=False
+    networks:
+      - fastapi-network
+
+networks:
+  fastapi-network:

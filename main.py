@@ -55,7 +55,37 @@ def remove_bg(img):
     
     return combinedImage
 
-   
+ 
+# Define an endpoint to receive and save the image
+@app.post("/remove_background/")
+async def remove_bg(file: UploadFile):
+    try:
+        # Create a directory to save the uploaded files if it doesn't exist
+        upload_dir = Path("temp")
+        upload_dir.mkdir(parents=True, exist_ok=True)
+
+        # Save the uploaded file to the local directory
+        with open(upload_dir / file.filename, "wb") as image_file:
+            shutil.copyfileobj(file.file, image_file)
+            
+        image=remove_bg(upload_dir / file.filename)
+        shutil.rmtree('temp',ignore_errors=True)
+          # Save the PIL Image as JPEG in a temporary file
+        with BytesIO() as temp_buffer:
+            image.save(temp_buffer, format="JPEG")
+            temp_buffer.seek(0)
+            
+            # Create a temporary file and write the image data to it
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_file:
+                temp_file.write(temp_buffer.read())
+                temp_file_path = temp_file.name
+        return FileResponse(temp_file_path, media_type="image/jpeg", headers={"Content-Disposition": "attachment; filename=removed.png"})
+
+    except Exception as e:
+        logging.error("An error occurred: %s", str(e))
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+    
+
 # Define an endpoint to receive and save the image
 @app.post("/extract/")
 async def upload_file(file: UploadFile):
@@ -104,7 +134,7 @@ async def getweather(area):
     else:
         season='summer'
 
-    return JSONResponse(content={"temperature": temperature,"season":season,'description':weather.current.description,'kind':weather.current.description})
+    return JSONResponse(content={"temperature": temperature,"season":season,'description':weather.current.description,'kind':str(weather.current.kind)})
 
 
 

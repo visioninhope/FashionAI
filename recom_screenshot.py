@@ -10,9 +10,9 @@ import tensorflow_hub as hub
 import os
 from PIL import Image
 # Load the USE model from TensorFlow Hub
-embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+# embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
 
-# embed = hub.load("model")
+embed = hub.load("model")
 
 class RecOutfit:
     def __init__(self,input_image_dict,wardrobe_path) -> None:
