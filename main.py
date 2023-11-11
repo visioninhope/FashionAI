@@ -58,7 +58,7 @@ def remove_bg(img):
  
 # Define an endpoint to receive and save the image
 @app.post("/remove_background/")
-async def remove_bg(file: UploadFile):
+async def remove_background(file: UploadFile):
     try:
         # Create a directory to save the uploaded files if it doesn't exist
         upload_dir = Path("temp")
@@ -67,16 +67,17 @@ async def remove_bg(file: UploadFile):
         # Save the uploaded file to the local directory
         with open(upload_dir / file.filename, "wb") as image_file:
             shutil.copyfileobj(file.file, image_file)
-            
-        image=remove_bg(upload_dir / file.filename)
+        
+        print('here i am')
+        image=remove_bg(Image.open(upload_dir / file.filename))
         shutil.rmtree('temp',ignore_errors=True)
           # Save the PIL Image as JPEG in a temporary file
         with BytesIO() as temp_buffer:
-            image.save(temp_buffer, format="JPEG")
+            image.save(temp_buffer, format="PNG")
             temp_buffer.seek(0)
             
             # Create a temporary file and write the image data to it
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_file:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_file:
                 temp_file.write(temp_buffer.read())
                 temp_file_path = temp_file.name
         return FileResponse(temp_file_path, media_type="image/jpeg", headers={"Content-Disposition": "attachment; filename=removed.png"})
