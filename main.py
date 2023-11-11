@@ -43,16 +43,17 @@ def remove_bg(img):
 
     # Remove the image background using the "rembg" library
     removedBGimage = remove(img, True)
+    print('removing')
 
     # Automatically crop the image
     croppedImage = autocrop_image(removedBGimage, 0)
-
+    print('croping')
     # Resize the cropped image to a specific size (700 pixels in this case)
     resizedImage = resize_image(croppedImage, 700)
-
+    print('resizing')
     # Create a new canvas with a specific size (1000x1000) and paste the image onto it
     combinedImage = resize_canvas(resizedImage, 1000, 1000)
-    
+    print('resizing canvas')
     return combinedImage
 
  
@@ -68,8 +69,9 @@ async def remove_background(file: UploadFile):
         with open(upload_dir / file.filename, "wb") as image_file:
             shutil.copyfileobj(file.file, image_file)
         
-        print('here i am')
+        print('going in')
         image=remove_bg(Image.open(upload_dir / file.filename))
+        print('bg removed')
         shutil.rmtree('temp',ignore_errors=True)
           # Save the PIL Image as JPEG in a temporary file
         with BytesIO() as temp_buffer:
@@ -80,6 +82,7 @@ async def remove_background(file: UploadFile):
             with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_file:
                 temp_file.write(temp_buffer.read())
                 temp_file_path = temp_file.name
+        print('returning')
         return FileResponse(temp_file_path, media_type="image/jpeg", headers={"Content-Disposition": "attachment; filename=removed.png"})
 
     except Exception as e:
